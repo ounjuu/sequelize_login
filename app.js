@@ -1,16 +1,28 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const session = require("express-session");
 const userRoutes = require("./routes/userRoutes");
-
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/sign", userRoutes);
-
-app.set("view engine", "ejs");
-app.set("views", "./views");
+const loginRoutes = require("./routes/loginRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+app.use("/sign", userRoutes);
+app.use("/login", loginRoutes);
+
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
 app.get("/", (req, res) => {
   res.render("index");

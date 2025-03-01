@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/css/registerSuccess.css" />
+    <link rel="stylesheet" href="/css/register/registerSuccess.css" />
     <title>register Success</title>
   </head>
   <body>
     <h1>회원가입 성공</h1>
-
-    <script src="/js/registerSuccess.js"></script>
+    <p id="userMessage"><%= user.username %> 님, 회원가입이 완료되었습니다!</p>
+    <a href="/login/main">로그인 페이지로 가기</a>
+    <script src="/js/register/registerSuccess.js"></script>
   </body>
 </html>
