@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
-const userRoutes = require("./routes/userRoutes");
 const path = require("path");
+const userRoutes = require("./routes/userRoutes");
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/api/users", userRoutes);
+app.use("/sign", userRoutes);
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
