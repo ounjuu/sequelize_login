@@ -1,6 +1,10 @@
 const { User } = require("../models");
 const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+dotenv.config();
+const SECRET_KEY = process.env.JWT_SECRET;
 
 // 회원가입 페이지
 const showRegisterPage = (req, res) => {
@@ -92,7 +96,15 @@ const loginUser = async (req, res) => {
         message: "이메일 또는 비밀번호가 틀렸습니다.",
       });
     }
-    req.session.userId = user.id;
+
+    // JWT 생성
+    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    // 쿠키에 JWT 저장
+    res.cookie("token", token, { httpOnly: true, secure: false });
+
     res.status(200).json({ success: true, message: "로그인 성공!" });
   } catch (error) {
     console.error("로그인 오류:", error);
@@ -102,13 +114,14 @@ const loginUser = async (req, res) => {
   }
 };
 
-// 세션에 사용자 ID가 없으면 로그인 페이지로 리디렉션
 const showDashboardPage = (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect("login/main");
+  // userId가 없으면 리디렉션 처리
+  if (!req.userId) {
+    return res.redirect("/login/main");
   }
 
-  User.findOne({ where: { id: req.session.userId } })
+  // userId를 사용하여 사용자 정보를 가져옴
+  User.findOne({ where: { id: req.userId } })
     .then((user) => {
       if (user) {
         res.render("login/dashboard", { user });
@@ -123,12 +136,8 @@ const showDashboardPage = (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: "로그아웃 오류가 발생했습니다." });
-    }
-    res.redirect("login/main");
-  });
+  res.clearCookie("token");
+  res.status(200).json({ success: true, message: "로그아웃 성공!" });
 };
 
 module.exports = {

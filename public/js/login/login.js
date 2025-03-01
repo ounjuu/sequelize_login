@@ -5,10 +5,14 @@ document.querySelector("#loginForm").addEventListener("submit", async (e) => {
   const password = document.querySelector("#password").value;
 
   try {
-    const response = await axios.post("/login/loginpost", {
-      email: email,
-      password: password,
-    });
+    const response = await axios.post(
+      "/login/loginpost",
+      {
+        email: email,
+        password: password,
+      },
+      { withCredentials: true }
+    );
 
     if (response.data.success) {
       window.location.href = "/login/dashboard";
