@@ -33,5 +33,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  User.associate = (models) => {
+    User.belongsToMany(models.ChatRoom, {
+      through: models.ChatRoomUser, // 중간 테이블 지정
+      foreignKey: "user_id",
+      otherKey: "chat_room_id",
+      as: "chatRooms",
+    });
+  };
+
   return User;
 };

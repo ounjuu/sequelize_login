@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, ChatRoom, ChatRoomUser, Message } = require("../models");
 const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
 const dotenv = require("dotenv");
@@ -114,25 +114,46 @@ const loginUser = async (req, res) => {
   }
 };
 
-const showDashboardPage = (req, res) => {
-  // userId가 없으면 리디렉션 처리
-  if (!req.userId) {
-    return res.redirect("/login/main");
-  }
+// 대시보드 페이지
+const showDashboardPage = async (req, res) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.redirect("/login/main");
+    }
 
-  // userId를 사용하여 사용자 정보를 가져옴
-  User.findOne({ where: { id: req.userId } })
-    .then((user) => {
-      if (user) {
-        res.render("login/dashboard", { user });
-      } else {
-        res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
-      }
-    })
-    .catch((error) => {
-      console.error("대시보드 페이지 로딩 오류:", error);
-      res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    res.cookie("userId", req.user.id, { maxAge: 900000, httpOnly: true });
+    const userId = req.user.id;
+
+    const chatRooms = await ChatRoom.findAll({
+      include: [
+        {
+          model: ChatRoomUser,
+          as: "chatRoomUsers",
+          where: { user_id: userId },
+          required: true,
+        },
+        {
+          model: User,
+          as: "users",
+        },
+        {
+          model: Message,
+          as: "messages",
+          order: [["created_at", "ASC"]], // 메시지를 시간순으로 정렬
+          limit: 10, // 각 채팅방에서 최근 10개의 메시지만 가져오기 (필요에 따라 수정)
+        },
+      ],
     });
+
+    // user 정보를 추가해서 렌더링
+    res.render("login/dashboard", {
+      chatRooms,
+      user: req.user, // `user`를 템플릿에 전달
+    });
+  } catch (error) {
+    console.error("채팅방 목록 조회 오류:", error);
+    res.status(500).send("서버 오류가 발생했습니다.");
+  }
 };
 
 const logoutUser = (req, res) => {

@@ -1,11 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>대시보드</title>
+    <link rel="stylesheet" href="/css/login/dashboard.css" />
   </head>
   <body>
-    <h1>대시보드 페이지</h1>
+    <header>
+      <h1>대시보드</h1>
+      <nav>
+        <ul>
+          <li><a href="/chat/rooms">채팅방 목록</a></li>
+          <li><a href="/chat/createRoom">새 채팅방 만들기</a></li>
+          <li><a href="/login/logout" id="logoutBtn">로그아웃</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="user-info">
+      <h2>안녕하세요, <%= user.username %>님!</h2>
+      <p>Email: <%= user.email %></p>
+    </section>
+
+    <section class="chat-rooms">
+      <h3>참여 중인 채팅방</h3>
+      <ul>
+        <% if (chatRooms && chatRooms.length > 0) { %> <%
+        chatRooms.forEach(function(room) { %>
+        <li>
+          <a href="/chat/room/<%= room.id %>"><%= room.name %></a>
+        </li>
+        <% }) %> <% } else { %>
+        <li>참여 중인 채팅방이 없습니다.</li>
+        <% } %>
+      </ul>
+    </section>
+
+    <section class="create-room">
+      <h3>새 채팅방 만들기</h3>
+      <label for="roomName">채팅방 이름</label>
+      <input type="text" id="roomName" name="roomName" required />
+      <button id="createRoomBtn">채팅방 만들기</button>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 All Rights Reserved</p>
+    </footer>
   </body>
+  <script src="/js/login/dashboard.js"></script>
 </html>

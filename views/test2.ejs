@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Chat test</title>
+    <link rel="stylesheet" href="/css/test2.css" />
+  </head>
+  <body>
+    <div id="chat">
+      <h3>채팅</h3>
+
+      <div id="messages"></div>
+      <input type="text" id="nickname" placeholder="닉네임 입력" />
+      <button onclick="setNickname()">닉네임 설정</button>
+      <br />
+      <input type="text" id="messageInput" placeholder="메시지 입력" />
+      <button onclick="sendMessage()">보내기</button>
+      <br />
+
+      <select id="userList"></select>
+      <button onclick="sendDM()">DM 보내기</button>
+    </div>
+  </body>
+  <script src="/js/test2.js"></script>
+</html>

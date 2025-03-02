@@ -1,0 +1,25 @@
+<!-- views/chat/room.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= chatRoom.name %> 채팅방</title>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1><%= chatRoom.name %> 채팅방</h1>
+    <h1><%= chatRoom.id %> ??</h1>
+    <ul id="messages">
+      <% messages.forEach((message) => { %>
+      <li><%= message.user_id %>: <%= message.message %></li>
+      <% }); %>
+    </ul>
+    <input type="text" id="message" placeholder="메시지를 입력하세요" />
+    <button id="sendBtn">보내기</button>
+
+    <script src="/js/chat/room.js"></script>
+  </body>
+</html>

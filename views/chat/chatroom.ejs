@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>채팅방</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/login/dashboard">대시보드</a></li>
+          <li><a href="/logout">로그아웃</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h1>채팅방 목록</h1>
+      <div id="chatRooms">
+        <% chatRooms.forEach(chatRoom => { %>
+        <div class="chat-room" data-room-id="<%= chatRoom.id %>">
+          <h2><%= chatRoom.name %></h2>
+          <p>그룹 채팅: <%= chatRoom.is_group ? '예' : '아니오' %></p>
+          <button onclick="joinChatRoom('<%= chatRoom.id %>')">
+            채팅방 입장
+          </button>
+        </div>
+        <% }); %>
+      </div>
+
+      <!-- 채팅 내용 -->
+      <div id="chatContainer" style="display: none">
+        <div id="chatMessages">
+          <!-- 채팅 메시지들이 여기에 표시됩니다. -->
+        </div>
+
+        <div id="chatInputContainer">
+          <input
+            type="text"
+            id="messageInput"
+            placeholder="메시지를 입력하세요..."
+          />
+          <button onclick="sendMessage()">보내기</button>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script src="/js/chat/chatroom.js" defer></script>
+</html>
