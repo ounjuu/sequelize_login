@@ -97,7 +97,6 @@ io.on("connection", (socket) => {
     socket.emit("directMessage", { message, sender });
   });
 
-  // 사용자가 퇴장하면 목록에서 제거
   socket.on("disconnect", () => {
     const nickname = users[socket.id] || "익명";
     delete users[socket.id];

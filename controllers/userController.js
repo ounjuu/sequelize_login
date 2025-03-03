@@ -15,22 +15,18 @@ const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // 사용자명 또는 이메일로 기존 사용자 검색
     const existingUser = await User.findOne({
       where: {
         [Op.or]: [{ username }, { email }],
       },
     });
 
-    // 이미 존재하는 사용자명 또는 이메일이 있으면 에러 응답
     if (existingUser) {
       return res.status(400).send("사용자명 또는 이메일이 이미 존재합니다.");
     }
 
-    // 비밀번호 암호화
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 새로운 사용자 생성
     const newUser = await User.create({
       username,
       email,
@@ -40,7 +36,6 @@ const registerUser = async (req, res) => {
 
     req.session.userId = newUser.id;
 
-    // 회원가입 성공 페이지 렌더링
     res.status(200).json({ message: "회원가입 성공!" });
   } catch (error) {
     console.error("회원가입 오류:", error);
@@ -97,12 +92,10 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // JWT 생성
     const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
       expiresIn: "1h",
     });
 
-    // 쿠키에 JWT 저장
     res.cookie("token", token, { httpOnly: true, secure: false });
 
     res.status(200).json({ success: true, message: "로그인 성공!" });
@@ -139,16 +132,15 @@ const showDashboardPage = async (req, res) => {
         {
           model: Message,
           as: "messages",
-          order: [["created_at", "ASC"]], // 메시지를 시간순으로 정렬
-          limit: 10, // 각 채팅방에서 최근 10개의 메시지만 가져오기 (필요에 따라 수정)
+          order: [["created_at", "ASC"]],
+          limit: 10,
         },
       ],
     });
 
-    // user 정보를 추가해서 렌더링
     res.render("login/dashboard", {
       chatRooms,
-      user: req.user, // `user`를 템플릿에 전달
+      user: req.user,
     });
   } catch (error) {
     console.error("채팅방 목록 조회 오류:", error);
